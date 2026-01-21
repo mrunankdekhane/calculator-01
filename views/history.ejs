@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculator History</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="history-page">
+            <div class="header">
+                <h1>Calculation History</h1>
+                <div>
+                    <a href="/" class="back-link">← Back to Calculator</a>
+                    <button onclick="clearHistory()" class="clear-btn">Clear All</button>
+                </div>
+            </div>
+
+            <div class="history-list">
+                <% if (calculations.length === 0) { %>
+                    <p class="no-history">No calculations yet</p>
+                <% } else { %>
+                    <% calculations.forEach(calc => { %>
+                        <div class="history-item">
+                            <div class="expression"><%= calc.expression %></div>
+                            <div class="result">= <%= calc.result %></div>
+                            <div class="timestamp">
+                                <%= new Date(calc.createdAt).toLocaleString() %>
+                            </div>
+                        </div>
+                    <% }); %>
+                <% } %>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        async function clearHistory() {
+            if (confirm('Are you sure you want to clear all history?')) {
+                try {
+                    const res = await fetch('/api/history', { method: 'DELETE' });
+                    const data = await res.json();
+                    if (data.success) {
+                        location.reload();
+                    }
+                } catch (error) {
+                    alert('Error clearing history');
+                }
+            }
+        }
+    </script>
+</body>
+</html>
